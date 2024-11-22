@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riddle Game - Score</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f4f4f9;
+            font-family: Arial, sans-serif;
+            color:#ebedef;
+            background-image: url("images/wallpaper3.jpg");
+            background-repeat: no-repeat;
+            height: 1000px;
+            background-position: center;
+            background-size:100% 100%;
+            
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .celebration {
+            text-align: center;
+            margin-top: 10px;          
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center">Sapiens Insuriddle</h2>
+        
+        <div id="scoreCard" class="text-center">
+            <p><span id="username"></span> | <span id="empid"></span></p>
+            <!-- <p id="username"></p>
+            <p id="empid"></p> -->
+            <b><p id="score"></p></b>
+            <p id="datetime"></p>
+        </div>
+
+        <div id="celebration" class="celebration" style="display: none;">
+            <h3>Congratulations! You won 100 SUVI!!!</h3>
+            <img src="https://media.giphy.com/media/VQgi9B47GP6CxH1alr/giphy.gif?cid=790b7611qmhx4tdl231st30ilqu08bans30cqxmgb1qswy6g&ep=v1_stickers_search&rid=giphy.gif&ct=s" alt="Celebration">
+        </div>
+
+        <div id="luck" class="celebration" style="display: none;">
+            <h3>Oops! Better luck next time!</h3>
+            <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNXg3YjAwbjJnZDV0MjZjZWRuamJhNGh2c2t5NXQ3bngzd3dobzFpaSZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/OzsUonxE7kkqNxAvwL/giphy.gif" alt="Better Luck Next Time">
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            const username = localStorage.getItem('username').toUpperCase();
+            const empid = localStorage.getItem('empid').toUpperCase();
+            const score = localStorage.getItem('score');
+
+            document.getElementById('username').textContent = `${username}`;
+            document.getElementById('empid').textContent = `${empid}`;
+            document.getElementById('score').textContent = `You Scored ${score} out of 5`;
+
+            if (score >= 3) {
+                document.getElementById('celebration').style.display = 'block';
+            } else {
+                document.getElementById('luck').style.display = 'block';
+            }
+        };
+
+        function updateDateTime() {
+                  const now = new Date();
+                  const dateString = now.toLocaleString(); // Gets the date and time in local format
+                  document.getElementById('datetime').textContent = dateString;
+              }
+          // Call the function immediately to show date and time on page load
+              updateDateTime();
+         
+          // Update the time every 1000 milliseconds (1 second)
+              setInterval(updateDateTime, 1000);
+    </script>
+</body>
+</html>

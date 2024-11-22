@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riddle Game - Step 2</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f4f4f9;
+            font-family: Arial, sans-serif;
+            color:#ebedef;
+            background-image: url("images/wallpaper3.jpg");
+            background-repeat: no-repeat;
+            height: 1000px;
+            background-position: center;
+            background-size:100% 100%;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        #timer {
+            font-size: 2rem;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h2 id="gameTitle" class="text-center">Sapiens Insuriddle</h2>
+    <div class="container">        
+        <p id="timer" class="text-center">Time Left: 1:00</p>
+        <div id="riddleArea" class="text-align">
+            <!-- Riddles will be inserted dynamically here -->
+        </div>
+        <button id="nextBtn" class="btn btn-primary" onclick="nextRiddle()">Next</button>
+        <button id="submitBtn" class="btn btn-success" onclick="submitAnswers()" style="display:none;">Submit</button>
+    </div>
+
+    <script>
+        const riddles = [
+  {
+    "question": "I cover your life and help your family when you're no longer around. What am I?",
+    "answers": ["Health Insurance", "Life Insurance", "Auto Insurance", "Travel Insurance"],
+    "correct": 1
+  },
+  {
+    "question": "I protect your vehicle from accidents, theft, and damage. What am I?",
+    "answers": ["Home Insurance", "Travel Insurance", "Car Insurance", "Life Insurance"],
+    "correct": 2
+  },
+  {
+    "question": "I ensure you can get medical care without breaking the bank. What am I?",
+    "answers": ["Health Insurance", "Property Insurance", "Disability Insurance", "Life Insurance"],
+    "correct": 0
+  },
+  {
+    "question": "I help you if your home is damaged by fire, flood, or theft. What am I?",
+    "answers": ["Home Insurance", "Life Insurance", "Renters Insurance", "Auto Insurance"],
+    "correct": 0
+  },
+  {
+    "question": "If your business is interrupted by unforeseen events like natural disasters, I cover your losses. What am I?",
+    "answers": ["Workers' Compensation", "Health Insurance", "Auto Insurance","Business Interruption Insurance"],
+    "correct": 3
+  },
+  {
+    "question": "I pay for the costs associated with accidents or injuries on the job. What am I?",
+    "answers": ["Life Insurance", "Disability Insurance", "Workers' Compensation", "Auto Insurance"],
+    "correct": 2
+  },
+  {
+    "question": "I cover medical expenses when you're traveling abroad or far from home. What am I?",
+    "answers": ["Auto Insurance", "Health Insurance","Travel Insurance","Life Insurance"],
+    "correct": 2
+  },
+  {
+    "question": "I provide coverage for your possessions in your rental home or apartment. What am I?",
+    "answers": ["Renters Insurance", "Homeowners Insurance", "Life Insurance", "Auto Insurance"],
+    "correct": 0
+  },
+  {
+    "question": "I cover damages to your property caused by an earthquake or flood. What am I?",
+    "answers": ["Earthquake Insurance", "Home Insurance", "Flood Insurance", "Life Insurance"],
+    "correct": 2
+  },
+  {
+    "question": "I help you cover expenses when your car is damaged or stolen. What am I?",
+    "answers": ["Life Insurance", "Home Insurance", "Pet Insurance","Car Insurance"],
+    "correct": 3
+  },
+  {
+    "question": "I help you in the event of permanent or temporary disability, so you can continue to pay bills. What am I?",
+    "answers": ["Disability Insurance", "Life Insurance", "Auto Insurance", "Property Insurance"],
+    "correct": 0
+  },
+  {
+    "question": "I provide compensation if you damage someone else’s property with your car. What am I?",
+    "answers": ["Collision Coverage", "Liability Coverage", "Health Insurance", "Renters Insurance"],
+    "correct": 1
+  },
+  {
+    "question": "I cover your belongings in case they are damaged or stolen from your car. What am I?",
+    "answers": ["Car Insurance", "Renters Insurance", "Personal Property Coverage", "Travel Insurance"],
+    "correct": 2
+  },
+  {
+    "question": "I am often used to protect a family’s financial future by replacing lost income. What am I?",
+    "answers": ["Travel Insurance", "Health Insurance","Life Insurance","Renters Insurance"],
+    "correct": 2
+  },
+  {
+    "question": "I help you if you accidentally cause harm to others or their property. What am I?",
+    "answers": ["Liability Insurance", "Car Insurance", "Homeowners Insurance", "Travel Insurance"],
+    "correct": 0
+  },
+  {
+    "question": "I protect your business against claims of negligence or mistakes made by employees. What am I?",
+    "answers": ["Workers' Compensation", "Business Liability Insurance", "Health Insurance", "Disability Insurance"],
+    "correct": 1
+  },
+  {
+    "question": "I cover the costs of repairs or replacement if your car is involved in a collision. What am I?",
+    "answers": ["Comprehensive Insurance", "Car Insurance", "Life Insurance","Collision Insurance"],
+    "correct": 3
+  },
+  {
+    "question": "If you're unable to work due to illness or injury, I replace part of your income. What am I?",
+    "answers": ["Car Insurance","Disability Insurance", "Home Insurance", "Life Insurance"],
+    "correct": 1
+  },
+  {
+    "question": "I protect against lawsuits and settlements if you’re found at fault for an accident. What am I?",
+    "answers": ["Liability Insurance", "Car Insurance", "Workers' Compensation", "Homeowners Insurance"],
+    "correct": 0
+  },
+  {
+    "question": "I cover your business against loss or theft of inventory, equipment, or other assets. What am I?",
+    "answers": ["Business Interruption Insurance", "Life Insurance", "Workers' Compensation","Commercial Property Insurance", ],
+    "correct": 3
+  },
+  {
+    "question": "I am used to protect you and your family financially in case you die unexpectedly. What am I?",
+    "answers": ["Health Insurance", "Auto Insurance","Life Insurance", "Property Insurance"],
+    "correct": 2
+  },
+  {
+    "question": "I cover your medical costs if you're injured or sick, but don't protect your property. What am I?",
+    "answers": ["Travel Insurance", "Car Insurance", "Life Insurance","Health Insurance"],
+    "correct": 3
+  },
+  {
+    "question": "I cover the things you own in case they're damaged or stolen in your home. What am I?",
+    "answers": ["Home Insurance", "Renters Insurance", "Life Insurance", "Business Insurance"],
+    "correct": 1
+  },
+  {
+    "question": "I protect your vehicle from natural disasters, vandalism, and theft. What am I?",
+    "answers": ["Auto Insurance", "Home Insurance", "Travel Insurance", "Life Insurance"],
+    "correct": 0
+  },
+  {
+    "question": "I help you get a roof over your head by paying for damages caused to your home. What am I?",
+    "answers": ["Renters Insurance","Homeowners Insurance", "Life Insurance", "Travel Insurance"],
+    "correct": 1
+  },
+  {
+    "question": "I help you in the event of an illness or injury that prevents you from working, covering part of your lost income. What am I?",
+    "answers": ["Disability Insurance", "Health Insurance", "Life Insurance", "Auto Insurance"],
+    "correct": 0
+  },
+  {
+    "question": "I help cover the costs of repairing your vehicle after an accident, but only if the accident wasn't your fault. What am I?",
+    "answers": ["Comprehensive Insurance", "Collision Insurance", "Liability Insurance", "Travel Insurance"],
+    "correct": 1
+  },
+  {
+    "question": "If you're traveling abroad and your luggage is lost or your trip is canceled, I cover the costs. What am I?",
+    "answers": ["Car Insurance", "Travel Insurance", "Life Insurance", "Health Insurance"],
+    "correct": 1
+  },
+  {
+    "question": "I help you protect your property, but only if it’s damaged due to a covered peril like a fire. What am I?",
+    "answers": ["Property Insurance", "Health Insurance", "Homeowners Insurance", "Renters Insurance"],
+    "correct": 2
+  },
+  {
+    "question": "I provide financial coverage for your business if a natural disaster damages your assets. What am I?",
+    "answers": ["Business Interruption Insurance", "Auto Insurance", "Workers' Compensation","Commercial Property Insurance", ],
+    "correct": 3
+  },
+  {
+    "question": "I help cover medical expenses and hospitalization when you're sick or injured, especially outside your home country. What am I?",
+    "answers": ["Travel Insurance", "Life Insurance", "Health Insurance", "Car Insurance"],
+    "correct": 0
+  },
+  {
+    "question": "I cover the financial costs if someone else is hurt by your actions or negligence. What am I?",
+    "answers": ["Auto Insurance", "Liability Insurance", "Homeowners Insurance", "Disability Insurance"],
+    "correct": 1
+  },
+  {
+    "question": "I cover your business if an employee gets hurt on the job. What am I?",
+    "answers": ["Health Insurance", "Life Insurance","Workers' Compensation", "Business Insurance"],
+    "correct": 2
+  },
+  {
+    "question": "I am what protects the financial future of your loved ones in case of your unexpected death. What am I?",
+    "answers": ["Life Insurance", "Health Insurance", "Renters Insurance", "Auto Insurance"],
+    "correct": 0
+  },
+  {
+    "question": "I help you when your home is damaged by a storm or a tree falls on it. What am I?",
+    "answers": ["Travel Insurance", "Life Insurance", "Car Insurance","Home Insurance", ],
+    "correct": 3
+  },
+  {
+    "question": "I cover medical treatment after an accident or injury. What am I?",
+    "answers": ["Health Insurance", "Life Insurance", "Car Insurance", "Renters Insurance"],
+    "correct": 0
+  },
+  {
+    "question": "I protect you from theft or damage of your car and also help in the event of an accident. What am I?",
+    "answers": ["Life Insurance", "Travel Insurance","Car Insurance", "Disability Insurance"],
+    "correct": 2
+  },
+  {
+    "question": "I provide compensation for employees who are injured or sick due to their work. What am I?",
+    "answers": ["Disability Insurance", "Life Insurance", "Renters Insurance","Workers' Compensation"],
+    "correct": 3
+  },
+  {
+    "question": "I help replace lost income if you're unable to work due to an injury or illness. What am I?",
+    "answers": ["Health Insurance", "Life Insurance","Disability Insurance", "Renters Insurance"],
+    "correct": 2
+  },
+  {
+    "question": "I provide the financial support to replace the contents of your house in case of fire or burglary. What am I?",
+    "answers": ["Health Insurance","Renters Insurance","Life Insurance", "Auto Insurance"],
+    "correct": 1
+  },
+  {
+    "question": "I replace part of your income if you become disabled and cannot work. What am I?",
+    "answers": ["Health Insurance", "Disability Insurance", "Life Insurance", "Car Insurance"],
+    "correct": 1
+  },
+  {
+    "question": "I provide a safety net if you’re injured or sick and unable to perform your job. What am I?",
+    "answers": ["Workers' Compensation", "Disability Insurance", "Home Insurance", "Travel Insurance"],
+    "correct": 1
+  },
+  {
+    "question": "If you're temporarily disabled and can't work, I help cover your lost income. What am I?",
+    "answers": ["Disability Insurance", "Car Insurance", "Health Insurance", "Renters Insurance"],
+    "correct": 0
+  },
+  {
+    "question": "If you’re unable to work due to an illness or injury, I offer you financial assistance. What am I?",
+    "answers": ["Life Insurance", "Disability Insurance", "Homeowners Insurance", "Auto Insurance"],
+    "correct": 1
+  },
+  {
+    "question": "I cover a portion of your income if you're unable to work due to a disabling medical condition. What am I?",
+    "answers": ["Health Insurance", "Life Insurance", "Disability Insurance", "Business Insurance"],
+    "correct": 2
+  },
+  {
+    "question": "I provide income replacement if you're disabled and can't work, helping you pay your bills. What am I?",
+    "answers": ["Disability Insurance", "Car Insurance", "Home Insurance", "Travel Insurance"],
+    "correct": 0
+  },
+  {
+    "question": "I help you cover expenses when you can’t earn a paycheck due to a long-term injury. What am I?",
+    "answers": ["Disability Insurance", "Health Insurance", "Workers' Compensation", "Renters Insurance"],
+    "correct": 0
+  },
+  {
+    "question": "If an accident leaves you unable to work for an extended period, I will cover a portion of your lost wages. What am I?",
+    "answers": ["Life Insurance", "Auto Insurance", "Property Insurance","Disability Insurance", ],
+    "correct": 3
+  },
+  {
+    "question": "I cover your income if you become disabled, either from illness or injury, and can’t perform your job. What am I?",
+    "answers": ["Disability Insurance", "Travel Insurance", "Homeowners Insurance", "Workers' Compensation"],
+    "correct": 0
+  },
+  {
+    "question": "If you suffer from a temporary disability, I help you pay your bills while you're unable to work. What am I?",
+    "answers": ["Workers' Compensation", "Health Insurance", "Disability Insurance", "Renters Insurance"],
+    "correct": 2
+  },
+  {
+    "question": "I step in to support you financially when an accident or illness prevents you from earning a living. What am I?",
+    "answers": ["Disability Insurance", "Life Insurance", "Health Insurance", "Car Insurance"],
+    "correct": 0
+  },
+  {
+    "question": "If you're temporarily or permanently disabled, I provide an income to replace your lost wages. What am I?",
+    "answers": ["Home Insurance", "Auto Insurance","Disability Insurance", "Health Insurance"],
+    "correct": 2
+  },
+  {
+    "question": "I don’t pay for medical expenses, but I pay for lost wages if you can’t work due to injury. What am I?",
+    "answers": ["Disability Insurance", "Health Insurance", "Life Insurance", "Renters Insurance"],
+    "correct": 0
+  },
+  {
+    "question": "I replace your paycheck when you’re unable to work due to illness or injury. What am I?",
+    "answers": ["Life Insurance", "Disability Insurance", "Auto Insurance", "Business Insurance"],
+    "correct": 1
+  },
+  {
+    "question": "I offer financial protection if you can’t work because of a serious injury or illness. What am I?",
+    "answers": ["Disability Insurance", "Health Insurance", "Workers' Compensation", "Travel Insurance"],
+    "correct": 0
+  },
+  {
+    "question": "I help cover your living expenses when you can't work because of an injury or medical condition. What am I?",
+    "answers": ["Life Insurance", "Disability Insurance", "Health Insurance", "Auto Insurance"],
+    "correct": 1
+  },
+  {
+    "question": "If you’re unable to work due to sickness or injury, I can replace part of your income. What am I?",
+    "answers": ["Disability Insurance", "Car Insurance", "Renters Insurance", "Business Insurance"],
+    "correct": 0
+  },
+  {
+    "question": "I cover the wages you lose when you are out of work due to an illness, accident, or injury. What am I?",
+    "answers": ["Disability Insurance", "Life Insurance", "Workers' Compensation", "Travel Insurance"],
+    "correct": 0
+  },
+  {
+    "question": "I help you stay financially stable when an illness or accident prevents you from doing your job. What am I?",
+    "answers": ["Renters Insurance", "Auto Insurance", "Health Insurance","Disability Insurance"],
+    "correct": 3
+  },
+  {
+    "question": "If you can’t work due to an injury, I provide income to replace your lost wages. What am I?",
+    "answers": ["Health Insurance", "Disability Insurance", "Car Insurance", "Renters Insurance"],
+    "correct": 1
+  },
+  {
+    "question": "I protect your business property from damage due to fire, theft, or natural disasters. What am I?",
+    "answers": ["Life Insurance", "Commercial Property Insurance", "Auto Insurance", "Health Insurance"],
+    "correct": 1
+  },
+  {
+    "question": "If a storm damages your office building or business equipment, I help cover the repair costs. What am I?",
+    "answers": ["Commercial Property Insurance", "Workers' Compensation", "Business Interruption Insurance", "Renters Insurance"],
+    "correct": 0
+  },
+  {
+    "question": "I cover losses or damage to physical assets like buildings, equipment, and inventory in your business. What am I?",
+    "answers": ["Life Insurance", "Auto Insurance", "Commercial Property Insurance", "Disability Insurance"],
+    "correct": 2
+  },
+  {
+    "question": "I help replace or repair your business property if it’s lost or damaged in a fire, flood, or vandalism. What am I?",
+    "answers": ["Business Liability Insurance", "Commercial Property Insurance", "Health Insurance", "Travel Insurance"],
+    "correct": 1
+  },
+  {
+    "question": "I protect your company’s physical property, including the building, inventory, and equipment, from unexpected events. What am I?",
+    "answers": ["Commercial Property Insurance", "Home Insurance", "Life Insurance", "Auto Insurance"],
+    "correct": 0
+  },
+  {
+    "question": "If your office space or manufacturing plant is damaged by a natural disaster, I cover the repair costs. What am I?",
+    "answers": ["Business Interruption Insurance", "Commercial Property Insurance", "Workers' Compensation", "Liability Insurance"],
+    "correct": 1
+  },
+  {
+    "question": "I cover the damage to your business’s physical assets, such as machinery, inventory, and office furniture, caused by fire or theft. What am I?",
+    "answers": ["Commercial Property Insurance", "Renters Insurance", "Auto Insurance", "Health Insurance"],
+    "correct": 0
+  },
+  {
+    "question": "I help your business recover from a loss of property due to fire, theft, or vandalism. What am I?",
+    "answers": ["Workers' Compensation", "Life Insurance", "Health Insurance","Commercial Property Insurance"],
+    "correct": 3
+  },
+  {
+    "question": "When your business assets are damaged, I can cover the costs to repair or replace the affected property. What am I?",
+    "answers": ["Commercial Property Insurance", "Business Liability Insurance", "Auto Insurance", "Disability Insurance"],
+    "correct": 0
+  },
+  {
+    "question": "I cover the physical damage to your business property, from office space to machinery, caused by unforeseen events. What am I?",
+    "answers": ["Car Insurance", "Homeowners Insurance","Commercial Property Insurance", "Renters Insurance"],
+    "correct": 2
+  },
+  {
+    "question": "I provide benefits to employees who are injured or become ill while working. What am I?",
+    "answers": ["Health Insurance", "Life Insurance", "Workers' Compensation", "Disability Insurance"],
+    "correct": 2
+  },
+  {
+    "question": "I help pay for medical bills and lost wages if an employee is injured at work. What am I?",
+    "answers": ["Workers' Compensation", "Auto Insurance", "Business Insurance", "Car Insurance"],
+    "correct": 0
+  },
+  {
+    "question": "I protect businesses by covering the cost of workplace injuries, including medical treatment and rehabilitation. What am I?",
+    "answers": ["Life Insurance","Workers' Compensation", "Travel Insurance", "Property Insurance"],
+    "correct": 1
+  },
+  {
+    "question": "I cover an employee’s lost income if they’re injured on the job and need to take time off work. What am I?",
+    "answers": ["Workers' Compensation", "Disability Insurance", "Health Insurance", "Renters Insurance"],
+    "correct": 0
+  },
+  {
+    "question": "I provide wage replacement and medical benefits to employees injured during their job duties. What am I?",
+    "answers": ["Business Interruption Insurance", "Life Insurance","Workers' Compensation", "Car Insurance"],
+    "correct": 2
+  },
+  {
+    "question": "If a worker is injured at work, I pay for their medical expenses and lost wages. What am I?",
+    "answers": ["Workers' Compensation", "Health Insurance", "Car Insurance", "Travel Insurance"],
+    "correct": 0
+  },
+  {
+    "question": "I help businesses by covering the costs of employees' medical treatment and lost wages when they’re injured on the job. What am I?",
+    "answers": ["Home Insurance", "Renters Insurance", "Life Insurance","Workers' Compensation", ],
+    "correct": 3
+  },
+  {
+    "question": "If an employee becomes disabled due to a work-related injury, I cover their lost earnings and medical costs. What am I?",
+    "answers": ["Workers' Compensation", "Disability Insurance", "Health Insurance", "Life Insurance"],
+    "correct": 0
+  },
+  {
+    "question": "I provide coverage for medical bills, rehabilitation costs, and lost wages if an employee is hurt at work. What am I?",
+    "answers": ["Business Liability Insurance", "Travel Insurance","Workers' Compensation", "Auto Insurance"],
+    "correct": 2
+  },
+  {
+    "question": "I assist employees by covering their expenses after they’ve suffered a work-related injury, including medical treatment and lost wages. What am I?",
+    "answers": ["Workers' Compensation", "Car Insurance", "Disability Insurance", "Life Insurance"],
+    "correct": 0
+  },
+  {
+    "question": "I protect your home from damage caused by tremors, but I don’t cover other types of natural disasters. What am I?",
+    "answers": ["Homeowners Insurance", "Earthquake Insurance", "Flood Insurance", "Car Insurance"],
+    "correct": 1
+  },
+  {
+    "question": "If your property is damaged by an earthquake, I help cover the repair costs. What am I?",
+    "answers": ["Earthquake Insurance", "Travel Insurance", "Life Insurance", "Business Interruption Insurance"],
+    "correct": 0
+  },
+  {
+    "question": "I help protect your home from cracks, foundation damage, and other destruction caused by shaking earth. What am I?",
+    "answers": ["Auto Insurance","Earthquake Insurance", "Flood Insurance", "Renters Insurance"],
+    "correct": 1
+  },
+  {
+    "question": "If the ground beneath you shakes, and your home suffers damage, I cover the cost of repairs. What am I?",
+    "answers": ["Homeowners Insurance", "Earthquake Insurance", "Disability Insurance", "Health Insurance"],
+    "correct": 1
+  },
+  {
+    "question": "I am specifically designed to help repair your property if it’s damaged during an earthquake. What am I?",
+    "answers": ["Earthquake Insurance", "Car Insurance", "Health Insurance", "Life Insurance"],
+    "correct": 0
+  },
+  {
+    "question": "I cover structural damage to your house caused by earthquakes, but only if you’ve purchased me separately. What am I?",
+    "answers": ["Homeowners Insurance", "Flood Insurance", "Auto Insurance","Earthquake Insurance"],
+    "correct": 3
+  },
+  {
+    "question": "I cover the costs of rebuilding or repairing your property after it’s damaged by the ground shaking. What am I?",
+    "answers": ["Earthquake Insurance", "Life Insurance", "Business Insurance", "Renters Insurance"],
+    "correct": 0
+  },
+  {
+    "question": "I’m an additional insurance policy that helps if your house is damaged by an earthquake, not just by fires or floods. What am I?",
+    "answers": ["Homeowners Insurance", "Travel Insurance","Earthquake Insurance", "Auto Insurance"],
+    "correct": 2
+  },
+  {
+    "question": "I don’t cover floods or fires, but if the earth shakes, I help cover the repair costs. What am I?",
+    "answers": ["Earthquake Insurance", "Flood Insurance", "Life Insurance", "Business Liability Insurance"],
+    "correct": 0
+  },
+  {
+    "question": "I help you rebuild your home if it is damaged by seismic activity, such as a major earthquake. What am I?",
+    "answers": ["Health Insurance","Earthquake Insurance", "Renters Insurance", "Car Insurance"],
+    "correct": 1
+  },
+  {
+    "question": "I help cover the costs when water from rivers, storms, or heavy rain causes damage to your property. What am I?",
+    "answers": ["Flood Insurance", "Homeowners Insurance", "Earthquake Insurance", "Auto Insurance"],
+    "correct": 0
+  },
+  {
+    "question": "If your house gets flooded due to heavy rains or rising water levels, I provide coverage to repair the damage. What am I?",
+    "answers": ["Health Insurance", "Car Insurance", "Renters Insurance","Flood Insurance"],
+    "correct": 3
+  },
+  {
+    "question": "I protect your home and belongings from water damage caused by flooding, but only if you have purchased me separately. What am I?",
+    "answers": ["Homeowners Insurance", "Travel Insurance","Flood Insurance", "Disability Insurance"],
+    "correct": 2
+  },
+  {
+    "question": "I cover your property when it is damaged by heavy rain, storm surges, or overflowing rivers. What am I?",
+    "answers": ["Earthquake Insurance", "Workers' Compensation Insurance", "Car Insurance","Flood Insurance", ],
+    "correct": 3
+  },
+  {
+    "question": "If your home is submerged in water due to a storm or hurricane, I help cover the costs to repair or replace your property. What am I?",
+    "answers": ["Flood Insurance", "Health Insurance", "Homeowners Insurance", "Life Insurance"],
+    "correct": 0
+  },
+  {
+    "question": "I’m designed to protect your property from damage caused by rising waters, such as floods from storms or melting snow. What am I?",
+    "answers": ["Homeowners Insurance", "Business Insurance","Flood Insurance", "Life Insurance"],
+    "correct": 2
+  },
+  {
+    "question": "I cover your property if it’s damaged by flooding from external sources like rivers, lakes, or heavy rain. What am I?",
+    "answers": ["Flood Insurance", "Renters Insurance", "Earthquake Insurance", "Auto Insurance"],
+    "correct": 0
+  },
+  {
+    "question": "I provide coverage for your home and possessions if they are damaged by flooding, but I don’t cover storm damage unless it involves water. What am I?",
+    "answers": ["Earthquake Insurance","Flood Insurance", "Property Insurance", "Workers' Compensation Insurance"],
+    "correct": 1
+  },
+  {
+    "question": "I help restore your property if it’s damaged by water from natural sources, such as rivers overflowing or a heavy storm surge. What am I?",
+    "answers": ["Life Insurance", "Auto Insurance", "Travel Insurance","Flood Insurance"],
+    "correct": 3
+  },
+  {
+    "question": "If your home is affected by rising waters or heavy rainfall, I cover the damages caused by flooding. What am I?",
+    "answers": ["Flood Insurance", "Car Insurance", "Health Insurance", "Commercial Property Insurance"],
+    "correct": 0
+  }
+];  
+
+        let currentRiddleIndex = 0;
+        let selectedAnswers = [];
+        let score = 0;
+        let timerValue = 60; // 2 minutes in seconds
+        let timerInterval;
+
+        // Shuffle the riddles array to ensure randomness
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+            }
+        }
+
+        // Limit to 5 random riddles
+        function getRandomRiddles() {
+            shuffleArray(riddles);  // Shuffle all riddles
+            return riddles.slice(0, 5); // Take the first 5 after shuffling
+        }
+
+        // Load the current riddle
+        function loadRiddle() {
+            const riddle = selectedRiddles[currentRiddleIndex];
+            const riddleArea = document.getElementById('riddleArea');
+            riddleArea.innerHTML = `
+                <h5>Riddle ${currentRiddleIndex + 1}: ${riddle.question}</h5>
+                ${riddle.answers.map((answer, i) => `
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="riddle${currentRiddleIndex}" value="${i}">
+                        <label class="form-check-label">${answer}</label>
+                    </div>
+                `).join('')}
+            `;
+        }
+
+        // Start the countdown timer
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                const minutes = Math.floor(timerValue / 60);
+                const seconds = timerValue % 60;
+                document.getElementById('timer').textContent = `Time Left: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                timerValue--;
+
+                if (timerValue < 0) {
+                    clearInterval(timerInterval);
+                    submitAnswers(); // Automatically submit when time runs out
+                }
+            }, 1000);
+        }
+
+        // Move to the next riddle
+        function nextRiddle() {
+            const selectedOption = document.querySelector(`input[name="riddle${currentRiddleIndex}"]:checked`);
+            if (selectedOption) {
+                selectedAnswers[currentRiddleIndex] = parseInt(selectedOption.value);
+                if (selectedAnswers[currentRiddleIndex] === selectedRiddles[currentRiddleIndex].correct) {
+                    score++;
+                }
+            }
+
+            currentRiddleIndex++;
+
+            if (currentRiddleIndex < selectedRiddles.length) {
+                loadRiddle();
+            } else {
+                document.getElementById('nextBtn').style.display = 'none';
+                document.getElementById('submitBtn').style.display = 'inline';
+            }
+        }
+
+        // Submit the answers and show the score
+        function submitAnswers() {
+            localStorage.setItem('score', score);
+            window.location.href = 'score.html'; // Redirect to score page
+        }
+
+        // Initialize the game
+        const selectedRiddles = getRandomRiddles(); // Get 5 random riddles
+        loadRiddle(); // Load the first riddle
+        startTimer(); // Start the timer
+    </script>
+</body>
+</html>
